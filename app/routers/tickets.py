@@ -16,8 +16,9 @@ async def create_ticket(
         db_ticket = await crud_ticket.create_ticket(db=db, ticket=ticket)
         
         # Send email in background
+        #funciona pero no activo para no mandar emails
         background_tasks.add_task(
-            email.send_ticket_notification,
+            email.send_ticket_notification_bg,
             db_ticket.id,
             db_ticket.subject,
             db_ticket.creator_email

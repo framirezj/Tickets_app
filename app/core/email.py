@@ -1,10 +1,14 @@
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from pydantic import EmailStr
 import os
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# -------------------------
+# Email configuration
+# -------------------------
 conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
@@ -17,27 +21,29 @@ conf = ConnectionConfig(
     VALIDATE_CERTS=True
 )
 
-async def send_ticket_notification(ticket_id: int, subject: str, creator_email: EmailStr):
-    """ moderator1 = os.getenv("MODERATOR_1_EMAIL")
-    moderator2 = os.getenv("MODERATOR_2_EMAIL")
-    
+# -------------------------
+# Async email sender
+# -------------------------
+async def send_ticket_notification(
+    ticket_id: int,
+    subject: str,
+    creator_email: EmailStr
+):
     recipients = [creator_email]
-    if moderator1:
-        recipients.append(moderator1)
-    if moderator2:
-        recipients.append(moderator2) """
 
-    recipients = [creator_email]
-    recipients.append(os.getenv("MODERATOR_1_EMAIL"))
+    moderator = os.getenv("MODERATOR_1_EMAIL")
+    if moderator:
+        recipients.append(moderator)
 
     html = f"""
-    <p>New Ticket Created (ID: {ticket_id})</p>
-    <p>Subject: {subject}</p>
-    <p>Creator: {creator_email}</p>
+    <p><strong>Nuevo Ticket Creado</strong></p>
+    <p><b>ID:</b> {ticket_id}</p>
+    <p><b>Asunto:</b> {subject}</p>
+    <p><b>Creador:</b> {creator_email}</p>
     """
 
     message = MessageSchema(
-        subject=f"Ticket Notification: {subject}",
+        subject=f"Notificación de Ticket: {subject}",
         recipients=recipients,
         body=html,
         subtype=MessageType.html
@@ -45,3 +51,19 @@ async def send_ticket_notification(ticket_id: int, subject: str, creator_email: 
 
     fm = FastMail(conf)
     await fm.send_message(message)
+
+# -------------------------
+# Sync wrapper for BackgroundTasks
+# -------------------------
+def send_ticket_notification_bg(
+    ticket_id: int,
+    subject: str,
+    creator_email: EmailStr
+):
+    """
+    Wrapper síncrono para poder usar send_ticket_notification
+    dentro de FastAPI BackgroundTasks
+    """
+    asyncio.run(
+        send_ticket_notification(ticket_id, subject, creator_email)
+    )

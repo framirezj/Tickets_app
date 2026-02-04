@@ -18,7 +18,8 @@ conf = ConnectionConfig(
     MAIL_STARTTLS=os.getenv("MAIL_STARTTLS") == "True",
     MAIL_SSL_TLS=os.getenv("MAIL_SSL_TLS") == "True",
     USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
+    VALIDATE_CERTS=True,
+    TEMPLATE_FOLDER=os.path.join(os.path.dirname(__file__), '..', 'templates')
 )
 
 # -------------------------
@@ -35,22 +36,23 @@ async def send_ticket_notification(
     if moderator:
         recipients.append(moderator)
 
-    html = f"""
-    <p><strong>Nuevo Ticket Creado</strong></p>
-    <p><b>ID:</b> {ticket_id}</p>
-    <p><b>Asunto:</b> {subject}</p>
-    <p><b>Creador:</b> {creator_email}</p>
-    """
+    # Template data
+    template_body = {
+        "ticket_id": ticket_id,
+        "subject": subject,
+        "creator_email": creator_email,
+        "description": "Please check the dashboard for details."
+    }
 
     message = MessageSchema(
         subject=f"Notificación de Ticket: {subject}",
         recipients=recipients,
-        body=html,
+        template_body=template_body,
         subtype=MessageType.html
     )
 
     fm = FastMail(conf)
-    await fm.send_message(message)
+    await fm.send_message(message, template_name="ticket_notification.html")
 
 # -------------------------
 # Sync wrapper for BackgroundTasks

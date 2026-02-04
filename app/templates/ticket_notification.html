@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-color: #f6f6f6;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        width: 100% !important;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      .header {
+        background-color: #4a90e2;
+        color: #ffffff;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 30px;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .footer {
+        background-color: #f6f6f6;
+        color: #999999;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+      }
+      .button {
+        display: inline-block;
+        background-color: #4a90e2;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 20px;
+      }
+      .data-table {
+        width: 100%;
+        margin-top: 15px;
+        border-collapse: collapse;
+      }
+      .data-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid #eeeeee;
+      }
+      .label {
+        font-weight: bold;
+        color: #555;
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Nuevo Ticket de Soporte</h1>
+      </div>
+      <div class="content">
+        <p>Se ha creado un nuevo ticket en el sistema.</p>
+
+        <table class="data-table">
+          <tr>
+            <td class="label">ID:</td>
+            <td>#{{ ticket_id }}</td>
+          </tr>
+          <tr>
+            <td class="label">Asunto:</td>
+            <td>{{ subject }}</td>
+          </tr>
+          <tr>
+            <td class="label">Creador:</td>
+            <td>{{ creator_email }}</td>
+          </tr>
+        </table>
+
+        <p style="margin-top: 20px">
+          <strong>Descripción:</strong><br />
+          {{ description }}
+        </p>
+
+        <center>
+          <a href="#" class="button">Ver Ticket</a>
+        </center>
+      </div>
+      <div class="footer">
+        <p>Este es un correo automático, por favor no responder.</p>
+        <p>&copy; 2026 TicketApp Support Team</p>
+      </div>
+    </div>
+  </body>
+</html>

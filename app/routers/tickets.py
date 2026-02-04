@@ -37,6 +37,31 @@ async def read_tickets(skip: int = 0, limit: int = 100, db: AsyncSession = Depen
 
 
 
+@router.get("/{ticket_id}", response_model=schemas_ticket.TicketResponse)
+async def read_ticket(ticket_id: int, db: AsyncSession=Depends(database.get_db)):
+    ticket = await crud_ticket.get_ticket_by_id(db, ticket_id)
+    if ticket is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return ticket
+
+@router.put("/{ticket_id}/status", response_model=schemas_ticket.TicketResponse)
+async def update_ticket_status(ticket_id: int, status_update: schemas_ticket.TicketUpdateStatus, db: AsyncSession = Depends(database.get_db)):
+    ticket = await crud_ticket.update_ticket_status(db, ticket_id, status_update.status)
+    if ticket is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return ticket
+
+
+
+
+
+
+
+
+
+
+
+
 ##ENDPOINTS DE PRUEBA DEV##    
 
 @router.post("/generate-test-data", response_model=list[schemas_ticket.TicketResponse])

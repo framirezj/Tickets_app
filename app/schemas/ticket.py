@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from app.models.ticket import TicketStatus
+from typing import Optional
 
 class TicketBase(BaseModel):
     subject: str
@@ -17,6 +18,9 @@ class TicketCreate(TicketBase):
             }
         }
     }
+
+class TicketUpdateStatus(BaseModel):
+    status: TicketStatus
 
 class TicketResponse(TicketBase):
     id: int
